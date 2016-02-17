@@ -1,7 +1,7 @@
 {
 	"name": "docblockr-vscode",
 	"displayName": "DocBlockr-vscode",
-	"description": "A DocBlockr port for VSCode",
+	"description": "A VSCode port of DocBlockr",
 	"version": "0.0.1",
 	"publisher": "shardul94",
 	"engines": {
@@ -10,17 +10,47 @@
 	"categories": [
 		"Other"
 	],
-	"activationEvents": [
-		"onCommand:extension.sayHello"
-	],
-	"main": "./extension",
+	"main": "./out/src/extension",
 	"contributes": {
-		"commands": [{
-			"command": "extension.sayHello",
-			"title": "Hello World"
-		}]
+        "languages": [
+            {
+                "id": "javascript",
+                "aliases": ["Javascript", "javascript"],
+                "extensions": [".js"]
+            }
+        ],
+        "keybindings": [{
+            "command": "docblockr-vscode.jsdocs",
+            "key": "tab",
+            "when": "editorTextFocus && !editorHasSelection && !editorHasMultipleSelections && !suggestWidgetVisible"
+        }],
+        "configuration": {
+            "title": "",
+            "properties": {
+                "docblockr-vscode.logLevel": {
+                    "type": "string",
+                    "enum": [
+                        "none",
+                        "log",
+                        "info",
+                        "warn",
+                        "error"
+                    ],
+                    "default": "log",
+                    "description": "Controls the verbosity of logging. Logs can be seen in the console by opening the dev tools. `log` is the most verbose and `error` will only show critical errors"
+                }
+            }
+        }
+    },
+    "activationEvents": [
+        "onLanguage:javascript"
+    ],
+	"scripts": {
+		"vscode:prepublish": "node ./node_modules/vscode/bin/compile",
+		"compile": "node ./node_modules/vscode/bin/compile -watch -p ./"
 	},
 	"devDependencies": {
+		"typescript": "^1.6.2",
 		"vscode": "0.10.x"
 	}
 }
