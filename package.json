@@ -1,6 +1,6 @@
 {
 	"name": "docblockr-vscode",
-	"displayName": "DocBlockr-vscode",
+	"displayName": "DocBlockr",
 	"description": "A VSCode port of DocBlockr",
 	"version": "0.0.1",
 	"publisher": "shardul94",
@@ -20,14 +20,14 @@
             }
         ],
         "keybindings": [{
-            "command": "docblockr-vscode.jsdocs",
+            "command": "docblockr.run",
             "key": "tab",
             "when": "editorTextFocus && !editorHasSelection && !editorHasMultipleSelections && !suggestWidgetVisible"
         }],
         "configuration": {
             "title": "",
             "properties": {
-                "docblockr-vscode.logLevel": {
+                "docblockr.logLevel": {
                     "type": "string",
                     "enum": [
                         "none",
