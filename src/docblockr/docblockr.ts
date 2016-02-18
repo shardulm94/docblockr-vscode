@@ -17,9 +17,7 @@ export default class DocBlockr {
             precedingText: string = editor.document.getText(new vscode.Range(currLine, 0, currLine, currChar));
 
         if (!this.validRunRegex(precedingText)) return;
-
         this.initialize(editor, inline);
-
     }
 
     private initialize(editor: vscode.TextEditor, inline: boolean = false) {

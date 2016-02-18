@@ -8,15 +8,17 @@ export default class DocBlockrLoader {
 
     private documentListener: vscode.Disposable;
     private logger: ILogger;
+    private docBlockr: DocBlockr;
 
     constructor() {
         this.logger = new Logger('docblockr');
+        this.docBlockr = new DocBlockr();
     }
 
     public activate(subscriptions: vscode.Disposable[]): void {
         subscriptions.push(this);
         vscode.workspace.onDidChangeConfiguration(this.loadConfiguration, this, subscriptions);
-        vscode.commands.registerTextEditorCommand('docblockr.run', (new DocBlockr()).run, null);
+        vscode.commands.registerTextEditorCommand('docblockr.run', this.docBlockr.run, this.docBlockr);
         this.loadConfiguration();
     }
 
