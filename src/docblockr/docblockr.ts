@@ -2,10 +2,23 @@
 
 import * as vscode from 'vscode';
 import { LogLevel, ILogger, Logger } from './utils/logger';
+import * as util from './utils/common';
+import * as parser from './parsers/helper';
+import CommonParser from './parsers/common';
 
 export default class DocBlockr {
 
     private logger: ILogger;
+    private keyPressed: string;
+
+    private settings: vscode.TextEditorOptions;
+    private trailingRgn: vscode.Range;
+    private trailingString: string;
+    private indentSpaces: string;
+    private prefix: string;
+    private parser: CommonParser;
+
+    private SETTING_INDENTATION_SPACES: number = 1;
 
     constructor() {
         this.logger = new Logger('docblockr');
@@ -16,12 +29,34 @@ export default class DocBlockr {
             currChar: number = editor.selection.active.character,
             precedingText: string = editor.document.getText(new vscode.Range(currLine, 0, currLine, currChar));
 
-        if (!this.validRunRegex(precedingText)) return;
+        if (!this.validRunRegex(precedingText)) {
+            editorEdit.insert(editor.selection.active, this.keyPressed);
+            return;
+        }
+
         this.initialize(editor, inline);
     }
 
-    private initialize(editor: vscode.TextEditor, inline: boolean = false) {
+    public runTab(editor: vscode.TextEditor, editorEdit: vscode.TextEditorEdit): void {
+        this.keyPressed = "\t";
+        this.run(editor, editorEdit);
+    }
 
+    private initialize(editor: vscode.TextEditor, inline: boolean = false) {
+        let point: vscode.Position = editor.selection.end;
+        this.settings = editor.options;
+
+        this.trailingRgn = new vscode.Range(point, editor.document.lineAt(point).range.end);
+        this.trailingString = editor.document.getText(this.trailingRgn).trim();
+        this.trailingString = util.escape(this.trailingString.replace(new RegExp('\\s*\\*\\/\\s*$'), ''));
+
+        this.indentSpaces = " ".repeat(Math.max(0, this.SETTING_INDENTATION_SPACES));
+        this.prefix = "*";
+        
+        // TODO: Align Tags
+       
+       this.parser = parser.getParser(editor.document.languageId);
+       
     }
 
 
@@ -34,9 +69,9 @@ export default class DocBlockr {
     }
 
     private validRegex(str: string, regexes: RegExp[]): boolean {
-        regexes.forEach(regex => {
-            if (regex.test(str)) return true;
-        });
+        for (var i = 0; i < regexes.length; i++) {
+            if (regexes[i].test(str)) return true;
+        }
         return false;
     }
 

@@ -20,7 +20,7 @@
             }
         ],
         "keybindings": [{
-            "command": "docblockr.run",
+            "command": "docblockr.runTab",
             "key": "tab",
             "when": "editorTextFocus && !editorHasSelection && !editorHasMultipleSelections && !suggestWidgetVisible"
         }],

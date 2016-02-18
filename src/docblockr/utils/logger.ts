@@ -1,3 +1,5 @@
+'use strict';
+
 import { window } from 'vscode';
 
 export enum LogLevel {
