@@ -1,8 +1,8 @@
 'use strict';
 
-import CommonParser from './common';
+import BaseParser from './base';
 import JavascriptParser from './javascript';
 
-export function getParser(languageId:string): CommonParser {
+export function getParser(languageId:string): BaseParser {
     return new JavascriptParser();
 }

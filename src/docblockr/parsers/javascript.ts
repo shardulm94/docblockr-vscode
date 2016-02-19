@@ -1,7 +1,7 @@
 'use strict';
 
-import CommonParser from './common';
+import BaseParser from './base';
 
-export default class JavascriptParser extends CommonParser {
+export default class JavascriptParser extends BaseParser {
     
 }

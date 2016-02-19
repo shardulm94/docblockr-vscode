@@ -4,7 +4,7 @@ import * as vscode from 'vscode';
 import { LogLevel, ILogger, Logger } from './utils/logger';
 import * as util from './utils/common';
 import * as parser from './parsers/helper';
-import CommonParser from './parsers/common';
+import BaseParser from './parsers/base';
 
 export default class DocBlockr {
 
@@ -16,7 +16,7 @@ export default class DocBlockr {
     private trailingString: string;
     private indentSpaces: string;
     private prefix: string;
-    private parser: CommonParser;
+    private parser: BaseParser;
 
     private SETTING_INDENTATION_SPACES: number = 1;
 
