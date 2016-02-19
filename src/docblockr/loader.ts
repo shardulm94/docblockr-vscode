@@ -3,15 +3,18 @@
 import * as vscode from 'vscode';
 import DocBlockr from './docblockr';
 import { LogLevel, ILogger, Logger } from './utils/logger';
+import Setting from './setting';
 
 export default class DocBlockrLoader {
 
     private documentListener: vscode.Disposable;
     private logger: ILogger;
     private docBlockr: DocBlockr;
-
+    private setting: Setting;
+    
     constructor() {
         this.logger = new Logger('docblockr');
+        this.setting = Setting.getInstance();
         this.docBlockr = new DocBlockr();
     }
 
