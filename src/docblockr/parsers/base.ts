@@ -65,7 +65,7 @@ export abstract class BaseParser {
         return this.nameOverride;
     }
 
-    private parse(line: string) {
+    private parse(line: string): string[] {
         if (this.config.get<boolean>('simpleMode'))
             return;
 
@@ -119,7 +119,7 @@ export abstract class BaseParser {
         return typeInfo;
     }
 
-    private formatFunction(name: string, args: string, retval: string, options: any = {}) { // TODO: fix options type (any??)
+    private formatFunction(name: string, args: string, retval: string, options: any = {}): string[] { // TODO: fix options type (any??)
         let out: string[] = [];
         if (options.as_setter) {
             out.push("@private");
