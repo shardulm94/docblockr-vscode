@@ -19,14 +19,23 @@ export interface ILogger {
 }
 
 export class Logger implements ILogger {
+    
+    private static instance: Logger = new Logger('DocBlockr');
     private level: LogLevel;
     private prefix: string;
 
     public constructor(prefix?: string, level?: LogLevel) {
-        this.prefix = prefix || 'LOGGER';
-        this.level = level || LogLevel.error;
+        if (!Logger.instance) {
+            Logger.instance = this;
+            this.prefix = prefix || 'LOGGER';
+            this.level = level || LogLevel.error;
+        }
     }
-
+    
+    public static getInstance(): Logger {
+        return Logger.instance;
+    }
+    
     public setLogLevel(level: LogLevel): void {
         this.level = level;
     }

@@ -1,39 +1,32 @@
 'use strict';
 
 import * as vscode from 'vscode';
-import DocBlockr from './docblockr';
 import { LogLevel, ILogger, Logger } from './utils/logger';
-import Setting from './setting';
+import { Config } from './config';
+import DocBlockr from './docblockr';
 
 export default class DocBlockrLoader {
 
     private documentListener: vscode.Disposable;
     private logger: ILogger;
     private docBlockr: DocBlockr;
-    private setting: Setting;
+    private config: Config;
     
     constructor() {
-        this.logger = new Logger('docblockr');
-        this.setting = Setting.getInstance();
+        this.logger = Logger.getInstance();
+        this.config = Config.getInstance();
         this.docBlockr = new DocBlockr();
     }
 
     public activate(subscriptions: vscode.Disposable[]): void {
         subscriptions.push(this);
-        vscode.workspace.onDidChangeConfiguration(this.loadConfiguration, this, subscriptions);
+        vscode.workspace.onDidChangeConfiguration(this.config.load, this, subscriptions);
         vscode.commands.registerTextEditorCommand('docblockr.runTab', this.docBlockr.runTab, this.docBlockr);
-        this.loadConfiguration();
+        this.logger.log("DocBlockr activated.");
     }
 
     public dispose(): void {
     }
 
-    private loadConfiguration(): void {
-        this.logger.log('Configuration changed');
-        let section = vscode.workspace.getConfiguration('docblockr');
-        if (section) {
-            let logLevel: string = section.get<string>('logLevel', 'log');
-            this.logger.setLogLevel(<LogLevel>LogLevel[logLevel]);
-        }
-    }
+    
 }

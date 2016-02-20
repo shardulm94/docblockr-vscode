@@ -2,26 +2,27 @@
 
 import * as vscode from 'vscode';
 import { LogLevel, ILogger, Logger } from './utils/logger';
+import { Config } from './config';
 import * as util from './utils/common';
 import * as parser from './parsers/helper';
-import BaseParser from './parsers/base';
+import { BaseParser } from './parsers/base';
 
 export default class DocBlockr {
 
     private logger: ILogger;
+    private config: Config;
     private keyPressed: string;
 
-    private settings: vscode.TextEditorOptions;
     private trailingRgn: vscode.Range;
     private trailingString: string;
     private indentSpaces: string;
     private prefix: string;
     private parser: BaseParser;
-
-    private SETTING_INDENTATION_SPACES: number = 1;
+    private line: string;
 
     constructor() {
-        this.logger = new Logger('docblockr');
+        this.logger = Logger.getInstance();
+        this.config = Config.getInstance();
     }
 
     public run(editor: vscode.TextEditor, editorEdit: vscode.TextEditorEdit, inline: boolean = false): void {
@@ -44,18 +45,30 @@ export default class DocBlockr {
 
     private initialize(editor: vscode.TextEditor, inline: boolean = false) {
         let point: vscode.Position = editor.selection.end;
-        this.settings = editor.options;
 
         this.trailingRgn = new vscode.Range(point, editor.document.lineAt(point).range.end);
         this.trailingString = editor.document.getText(this.trailingRgn).trim();
         this.trailingString = util.escape(this.trailingString.replace(new RegExp('\\s*\\*\\/\\s*$'), ''));
 
-        this.indentSpaces = " ".repeat(Math.max(0, this.SETTING_INDENTATION_SPACES));
+        this.indentSpaces = " ".repeat(Math.max(0, this.config.get<number>('indentationSpaces')));
         this.prefix = "*";
         
         // TODO: Align Tags
        
        this.parser = parser.getParser(editor.document.languageId);
+       this.parser.setInline(inline);
+
+        // use trailing string as a description of the function
+        if (this.trailingString)
+            this.parser.setNameOverride(this.trailingString)
+
+        let definitionRange: string[];
+        for (let i:number = point.line + 1; i <= point.line + 25; i++) {
+            if(i >= editor.document.lineCount) break;
+            definitionRange.push(editor.document.lineAt(i).text);
+        }
+        // read the next line
+        this.line = this.parser.getDefinition(definitionRange);
        
     }
 
