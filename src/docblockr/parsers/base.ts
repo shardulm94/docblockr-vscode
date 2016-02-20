@@ -33,7 +33,7 @@ export abstract class BaseParser {
     protected config: Config;
     protected nameOverride: string;
     private inline: boolean;
-    protected settings: string[];
+    protected settings: {};
 
     constructor() {
         this.config = Config.getInstance();
@@ -216,7 +216,7 @@ export abstract class BaseParser {
             out.push(this.getArgInfo(arg));
         });
 
-        return util.flatten(out);
+        return util.flatten<IParseArg>(out);
     }
 
     private getArgInfo(arg: string): IParseArg[] {
@@ -305,11 +305,12 @@ export abstract class BaseParser {
             if (openBrackets == 0)
                 break;
         }
-        return definition
+        return definition;
     }
 
-    abstract parseFunction(line: string): IParseFunction;
-    abstract parseVar(line: string): IParseVar;
-    abstract setupSettings(): void;
+    protected abstract parseFunction(line: string): IParseFunction;
+    protected abstract parseVar(line: string): IParseVar;
+    protected abstract guessTypeFromValue(val: string): string;
+    protected abstract setupSettings(): void;
 
 }

@@ -43,7 +43,7 @@ export default class DocBlockr {
         this.run(editor, editorEdit);
     }
 
-    private initialize(editor: vscode.TextEditor, inline: boolean = false) {
+    private initialize(editor: vscode.TextEditor, inline: boolean = false): void {
         let point: vscode.Position = editor.selection.end;
 
         this.trailingRgn = new vscode.Range(point, editor.document.lineAt(point).range.end);
@@ -55,21 +55,20 @@ export default class DocBlockr {
         
         // TODO: Align Tags
        
-       this.parser = parser.getParser(editor.document.languageId);
-       this.parser.setInline(inline);
+        this.parser = parser.getParser(editor.document.languageId);
+        this.parser.setInline(inline);
 
         // use trailing string as a description of the function
         if (this.trailingString)
-            this.parser.setNameOverride(this.trailingString)
+            this.parser.setNameOverride(this.trailingString);
 
         let definitionRange: string[];
-        for (let i:number = point.line + 1; i <= point.line + 25; i++) {
-            if(i >= editor.document.lineCount) break;
+        for (let i: number = point.line + 1; i <= point.line + 25; i++) {
+            if (i >= editor.document.lineCount) break;
             definitionRange.push(editor.document.lineAt(i).text);
         }
         // read the next line
         this.line = this.parser.getDefinition(definitionRange);
-       
     }
 
 
