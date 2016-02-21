@@ -44,7 +44,7 @@ export abstract class BaseParser {
         return (new RegExp("^" + regex.source)).exec(str);
     }
 
-    private isExistingComment(line: string): number {
+    public isExistingComment(line: string): number {
         return line.search(new RegExp('^\\s*\\*'));
     }
 
@@ -65,7 +65,7 @@ export abstract class BaseParser {
         return this.nameOverride;
     }
 
-    private parse(line: string): string[] {
+    public parse(line: string): string[] {
         if (this.config.get<boolean>('simpleMode'))
             return;
 
@@ -224,11 +224,11 @@ export abstract class BaseParser {
         return [{ argType: this.getArgType(arg), argName: this.getArgName(arg) }];
     }
 
-    private getArgType(arg: string): string {
+    protected getArgType(arg: string): string {
         return null;
     }
 
-    private getArgName(arg: string): string {
+    protected getArgName(arg: string): string {
         return arg;
     }
 
@@ -242,7 +242,7 @@ export abstract class BaseParser {
         let matches: INotationMap[] = this.getMatchingNotations(name);
         if (matches.length > 0) {
             let rule: INotationMap = matches[0];
-            if(rule.type)
+            if (rule.type)
                 return (this.settings[rule.type]) ? this.settings[rule.type] : rule.type;
         }
 
