@@ -101,7 +101,7 @@ export default class JavascriptParser extends BaseParser {
     
     protected getArgType(arg:string):string{
         let parts:string[];
-        parts = XRegExp.split(arg,'\\s*=\\s*', 1);
+        parts = XRegExp.split(arg, XRegExp('\\s*=\\s*'), 1);
         // rest parameters
         if(parts[0].indexOf('...') == 0)
             return '...[type]';
@@ -110,7 +110,7 @@ export default class JavascriptParser extends BaseParser {
     }
     
     protected getArgName(arg:string):string{
-        let namePart:string = XRegExp.split(arg,'\\s*=\\s*', 1)[0];
+        let namePart:string = XRegExp.split(arg, XRegExp('\\s*=\\s*'), 1)[0];
         
         // check for rest parameters, eg: function (foo, ...rest) {}
         if (namePart.indexOf('...') == 0)
@@ -157,7 +157,7 @@ export default class JavascriptParser extends BaseParser {
             let returnVal:string = ((shortPrimitives)?'Bool': 'Boolean');
             return ((lowerPrimitives)? returnVal.toLowerCase() : returnVal);
         }
-        if (XRegExp.test(val, 'RegExp\\b|\\/[^\\/]', 0, true)) // TODO : check if this works
+        if (XRegExp.test(val, XRegExp('RegExp\\b|\\/[^\\/]'), 0, true)) // TODO : check if this works
             return 'RegExp';
         if (val.indexOf('=>') > -1)
             return ((lowerPrimitives)?'function' : 'Function');

@@ -204,7 +204,7 @@ export default class DocBlockr {
         }
 
         function subLine(line: string): string {
-            return XRegExp.replace(line, '\\{\\{([^}]+)\\}\\}', getVar, 'all');
+            return XRegExp.replace(line, XRegExp('\\{\\{([^}]+)\\}\\}'), getVar, 'all');
         }
 
         return out.map(subLine);
