@@ -84,7 +84,7 @@ export default class JavascriptParser extends BaseParser {
     
     protected getArgInfo(arg:string) : IParseArg[]{
         let subItems:string[];
-        let prefix:string;  
+        let prefix:string = "";  
         if(XRegExp.test(arg, XRegExp('^\{.*\}$'))){
             subItems = util.splitByCommas(arg.substring(1, arg.length - 1 ));
             prefix = 'options.';
@@ -95,7 +95,7 @@ export default class JavascriptParser extends BaseParser {
         let out:IParseArg[] = [];
         subItems.forEach(subItem => {
             out.push({ argType: this.getArgType(subItem), argName: prefix + this.getArgName(subItem) });
-        });
+        },this);
         return out;
     }
     
