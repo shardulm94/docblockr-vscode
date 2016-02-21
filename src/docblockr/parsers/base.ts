@@ -156,7 +156,7 @@ export abstract class BaseParser {
         // return value type might be already available in some languages but
         // even then ask language specific parser if it wants it listed
         let retType: string = this.getFunctionReturnType(name, retval);
-        if (retType === undefined) {
+        if (retType !== undefined) {
             let typeInfo: string = "";
             if (this.settings['typeInfo']) {
                 typeInfo = " "
@@ -194,15 +194,15 @@ export abstract class BaseParser {
 
     protected getFunctionReturnType(name: string, retval: string): string {
         // returns undefined for no return type. null meaning unknown, or a string
-        if (XRegExp.test(name, XRegExp("[A-Z]")))
+        if (XRegExp.test(name, XRegExp("[A-Z]"), 0, true))
             // no return, but should add a class
             return undefined;
 
-        if (XRegExp.test(name, XRegExp("[$_]?(?:set|add)($|[A-Z_])")))
+        if (XRegExp.test(name, XRegExp("[$_]?(?:set|add)($|[A-Z_])"), 0, true))
             // setter/mutator, no return
             return undefined;
 
-        if (XRegExp.test(name, XRegExp("[$_]?(?:is|has)($|[A-Z_])")))
+        if (XRegExp.test(name, XRegExp("[$_]?(?:is|has)($|[A-Z_])"), 0, true))
             // functions starting with 'is' or 'has'
             return this.settings['bool'];
 
@@ -244,13 +244,13 @@ export abstract class BaseParser {
         if (matches.length > 0) {
             let rule: INotationMap = matches[0];
             if (rule.type)
-                return (this.settings[rule.type]) ? this.settings[rule.type] : rule.type;
+                return ((this.settings[rule.type]) ? this.settings[rule.type] : rule.type);
         }
 
-        if (XRegExp.test(name, XRegExp("(?:is|has)[A-Z_]")))
+        if (XRegExp.test(name, XRegExp("(?:is|has)[A-Z_]"), 0, true))
             return this.settings['bool'];
 
-        if (XRegExp.test(name, XRegExp("^(?:cb|callback|done|next|fn)$")))
+        if (XRegExp.test(name, XRegExp("^(?:cb|callback|done|next|fn)$"), 0, true))
             return this.settings['function'];
 
         return null;
@@ -306,7 +306,7 @@ export abstract class BaseParser {
             // needed for cases like this:
             // (function (foo, bar) { ... })
             if (definition == "") {
-                let opener = (this.settings['fnOpener']) ? XRegExp.exec(line, XRegExp(this.settings['fnOpener'])) : null;
+                let opener = ((this.settings['fnOpener']) ? XRegExp.exec(line, XRegExp(this.settings['fnOpener'])) : null);
                 if (opener)
                     // ignore everything before the function opener
                     searchForBrackets = line.substring(opener.index);

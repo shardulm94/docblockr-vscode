@@ -59,7 +59,7 @@ export default class JavascriptParser extends BaseParser {
             return null;
         
         // grab the name out of "name1 = function name2(foo)" preferring name1
-        let generatorSymbol: string = ((res.generator || '').indexOf('*') > -1) ? '*' : '';
+        let generatorSymbol: string = (((res.generator || '').indexOf('*') > -1) ? '*' : '');
         let name: string = generatorSymbol + (res.name1 || res.name2 || '');
         let args: string = res.args || res.args2 || '';
 
@@ -129,7 +129,7 @@ export default class JavascriptParser extends BaseParser {
         if (name && name[0] == '*'){
             // if '@returns' is preferred, then also use '@yields'. Otherwise, '@return' and '@yield'
             let yieldTag:string = '@yield' + ((this.config.get<string>('returnTag').slice(-1) == 's') ? 's' : '');
-            let description:string = (this.config.get<boolean>('returnDescription')) ? ' ${1:[description]}'  : '';
+            let description:string = ((this.config.get<boolean>('returnDescription')) ? ' ${1:[description]}'  : '');
             out.push({ tags: [
                 yieldTag + ' {${1:[type]}}' + description
             ]});
@@ -142,21 +142,21 @@ export default class JavascriptParser extends BaseParser {
         let shortPrimitives:boolean = this.config.get<boolean>('shortPrimitives') || false;
         
         if (util.isNumeric(val))
-            return (lowerPrimitives)?"number" : "Number";
+            return ((lowerPrimitives)?"number" : "Number");
         if (val[0] == '"' || val[0] == "'")
-            return (lowerPrimitives)?"string": "String";
+            return ((lowerPrimitives)?"string": "String");
         if (val[0] == '[')
             return "Array";
         if (val[0] == '{')
             return "Object";
         if (val == 'true' || val == 'false'){
-            let returnVal:string = (shortPrimitives)?'Bool': 'Boolean';
-            return (lowerPrimitives)? returnVal.toLowerCase() : returnVal;
+            let returnVal:string = ((shortPrimitives)?'Bool': 'Boolean');
+            return ((lowerPrimitives)? returnVal.toLowerCase() : returnVal);
         }
         if (XRegExp.test(val, 'RegExp\\b|\\/[^\\/]', 0, true)) // TODO : check if this works
             return 'RegExp';
         if (val.indexOf('=>') > -1)
-            return (lowerPrimitives)?'function' : 'Function';
+            return ((lowerPrimitives)?'function' : 'Function');
         if (val.substring(0,4) == 'new '){
             let res = XRegExp.exec(val, XRegExp('new (' + this.settings['fnIdentifier'] + ')'));
             return res && res[1] || null;
