@@ -53,6 +53,10 @@ export abstract class BaseParser {
         return this.inline;
     }
 
+    public getSettings(): {} {
+        return this.settings;
+    }
+
     public setNameOverride(name: string): void {
         //overrides the description of the function - used instead of parsed description
         this.nameOverride = name;
