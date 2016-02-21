@@ -6,6 +6,7 @@ import { Config } from './config';
 import * as util from './utils/common';
 import * as parser from './parsers/helper';
 import { BaseParser } from './parsers/base';
+let XRegExp = require('xregexp');
 
 export default class DocBlockr {
 
@@ -61,7 +62,7 @@ export default class DocBlockr {
 
         this.trailingRgn = new vscode.Range(point, editor.document.lineAt(point).range.end);
         this.trailingString = editor.document.getText(this.trailingRgn).trim();
-        this.trailingString = util.escape(this.trailingString.replace(new RegExp('\\s*\\*\\/\\s*$'), ''));
+        this.trailingString = util.escape(XRegExp.replace(this.trailingString, XRegExp('\\s*\\*\\/\\s*$'), ''));
 
         this.indentSpaces = " ".repeat(Math.max(0, this.config.get<number>('indentationSpaces')));
         this.prefix = "*";
@@ -92,15 +93,15 @@ export default class DocBlockr {
     }
 
     private validRunRegex(precedingText: string): boolean {
-        let validPrecedingRegexes: RegExp[] = [
-            new RegExp("^\\s*(\\/\\*|###)[*!]\\s*$")
+        let validPrecedingRegexes: string[] = [
+            "^\\s*(\\/\\*|###)[*!]\\s*$"
         ];
         return this.validRegex(precedingText, validPrecedingRegexes);
     }
 
-    private validRegex(str: string, regexes: RegExp[]): boolean {
+    private validRegex(str: string, regexes: string[]): boolean {
         for (var i = 0; i < regexes.length; i++) {
-            if (regexes[i].test(str)) return true;
+            if (XRegExp.test(str, XRegExp(regexes[i]))) return true;
         }
         return false;
     }

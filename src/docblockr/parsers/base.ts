@@ -41,12 +41,8 @@ export abstract class BaseParser {
         this.nameOverride = null;
     }
 
-    private matchRegex(regex: RegExp, str: string): RegExpExecArray {
-        return (new RegExp("^" + regex.source)).exec(str);
-    }
-
     public isExistingComment(line: string): boolean {
-        return (XRegExp.exec(line, XRegExp('^\\s*\\*'))) ? true : false;
+        return XRegExp.test(line, XRegExp('^\\s*\\*'));
     }
 
     public setInline(inline: boolean): void {
@@ -141,7 +137,7 @@ export abstract class BaseParser {
         // if there are arguments, add a @param for each
         if (args) {
             // remove comments inside the argument list.
-            args = args.replace(new RegExp("/\\*.*?\\*/"), "");
+            args = XRegExp.replace(args, XRegExp("/\\*.*?\\*/"), "");
             this.parseArgs(args).forEach(arg => {
                 let typeInfo: string = this.getTypeInfo(arg.argType, arg.argName);
 
@@ -150,7 +146,7 @@ export abstract class BaseParser {
                     + (this.config.get<boolean>('paramName') ? util.escape(arg.argName) : "")
                     + (this.config.get<boolean>("paramDescription") ? " ${1:[description]}" : "");
                 out.push(formatStr);
-            },this);
+            }, this);
         }
         
         // return value type might be already available in some languages but
@@ -194,15 +190,15 @@ export abstract class BaseParser {
 
     protected getFunctionReturnType(name: string, retval: string): string {
         // returns undefined for no return type. null meaning unknown, or a string
-        if ((new RegExp("[A-Z]", "i")).test(name))
+        if (XRegExp.test(name, XRegExp("[A-Z]")))
             // no return, but should add a class
             return undefined;
 
-        if ((new RegExp("[$_]?(?:set|add)($|[A-Z_])", "i")).test(name))
+        if (XRegExp.test(name, XRegExp("[$_]?(?:set|add)($|[A-Z_])")))
             // setter/mutator, no return
             return undefined;
 
-        if ((new RegExp("[$_]?(?:is|has)($|[A-Z_])", "i")).test(name))
+        if (XRegExp.test(name, XRegExp("[$_]?(?:is|has)($|[A-Z_])")))
             // functions starting with 'is' or 'has'
             return this.settings['bool'];
 
@@ -215,7 +211,7 @@ export abstract class BaseParser {
         let out: IParseArg[][] = [];
         blocks.forEach(arg => {
             out.push(this.getArgInfo(arg));
-        },this);
+        }, this);
 
         return util.flatten<IParseArg>(out);
     }
@@ -247,10 +243,10 @@ export abstract class BaseParser {
                 return (this.settings[rule.type]) ? this.settings[rule.type] : rule.type;
         }
 
-        if ((new RegExp("(?:is|has)[A-Z_]", "i")).test(name))
+        if (XRegExp.test(name, XRegExp("(?:is|has)[A-Z_]")))
             return this.settings['bool'];
 
-        if ((new RegExp("^(?:cb|callback|done|next|fn)$", "i")).test(name))
+        if (XRegExp.test(name, XRegExp("^(?:cb|callback|done|next|fn)$")))
             return this.settings['function'];
 
         return null;
@@ -261,26 +257,26 @@ export abstract class BaseParser {
             .filter(function(rule: INotationMap): boolean {
                 if (rule.prefix) {
                     let regex: string = util.escapeRegex(rule.prefix);
-                    if (this.matchRegex(new RegExp(".*[a-z]"), rule.prefix))
+                    if (XRegExp.test(rule.prefix, XRegExp(".*[a-z]"), 0, true))
                         regex += "(?:[A-Z_]|$)";
-                    return (this.matchRegex(new RegExp(regex), name)) ? true : false;
+                    return XRegExp.test(rule.prefix, XRegExp(regex), 0, true);
 
                 } else if (rule.regex) {
-                    return (new RegExp(rule.regex, "i")).test(name);
+                    return XRegExp.test(name, XRegExp(rule.regex));
                 }
             }, this);
     }
-    
-    private getNotationMapFromConfig(): INotationMap[]{
+
+    private getNotationMapFromConfig(): INotationMap[] {
         // let notationMap:Object[] =  (this.config.get<Object>("notationMap"))["notations"];
         // let out:INotationMap[] = [];
         // notationMap.forEach(notation => {
         //     out.push({prefix: notation.prefix, regex: notation.regex, type: notation.type, tags: notation.tags});
         // });
         // return out;
-        let notationMap:INotationMap[] =  (this.config.get<Object>("notationMap"))["notations"];
+        let notationMap: INotationMap[] = (this.config.get<Object>("notationMap"))["notations"];
         return notationMap;
-    } 
+    }
 
     public getDefinition(lines: string[]): string {
         // get a relevant definition starting at the given point
@@ -297,8 +293,8 @@ export abstract class BaseParser {
             let line: string = lines[i];
             
             // strip comments
-            line = line.replace(new RegExp("//.*"), "");
-            line = line.replace(new RegExp("/\\*.*\\*/"), "");
+            line = XRegExp.replace(line, XRegExp("//.*"), "");
+            line = XRegExp.replace(line, XRegExp("/\\*.*\\*/"), "");
 
             let searchForBrackets: string = line;
             
@@ -306,13 +302,13 @@ export abstract class BaseParser {
             // needed for cases like this:
             // (function (foo, bar) { ... })
             if (definition == "") {
-                let opener: RegExpExecArray = (this.settings['fnOpener']) ? (new RegExp(this.settings['fnOpener'])).exec(line) : null;
+                let opener = (this.settings['fnOpener']) ? XRegExp.exec(line, XRegExp(this.settings['fnOpener'])) : null;
                 if (opener)
                     // ignore everything before the function opener
                     searchForBrackets = line.substring(opener.index);
             }
 
-            openBrackets = searchForBrackets.match(new RegExp("[()]", "g")).reduce(countBrackets, openBrackets);
+            openBrackets = XRegExp.match(searchForBrackets, XRegExp("[()]", "g")).reduce(countBrackets, openBrackets);
 
             definition += line;
             if (openBrackets == 0)
