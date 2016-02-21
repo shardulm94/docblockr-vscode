@@ -131,7 +131,11 @@ export default class JavascriptParser extends BaseParser {
             let yieldTag:string = '@yield' + ((this.config.get<string>('returnTag').slice(-1) == 's') ? 's' : '');
             let description:string = ((this.config.get<boolean>('returnDescription')) ? ' ${1:[description]}'  : '');
             out.push({ tags: [
-                yieldTag + ' {${1:[type]}}' + description
+                yieldTag 
+                + ' {${1:[type]}}' 
+                // the extra space here is so that the description will align with the param description
+                + (((this.config.get<string>("alignTags") == "deep") && !this.config.get<boolean>("perSectionIndent")) ? " " : "")
+                + description
             ]});
         }
         return out;
