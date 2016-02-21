@@ -101,7 +101,7 @@ export default class JavascriptParser extends BaseParser {
     
     protected getArgType(arg:string):string{
         let parts:string[];
-        parts = XRegExp.split(arg, XRegExp('\\s*=\\s*'), 1);
+        parts = XRegExp.split(arg, XRegExp('\\s*=\\s*'), 2);
         // rest parameters
         if(parts[0].indexOf('...') == 0)
             return '...[type]';
