@@ -100,7 +100,7 @@ export abstract class BaseParser {
         }
         else {
 
-            out.push("${1:[" + util.escape(name) + "description]}");
+            out.push("${1:[" + util.escape(name) + " description]}");
             out.push("@" + this.settings['typeTag'] + " "
                 + ((this.settings['curlyTypes']) ? "{" : "")
                 + "${1:" + valType + "}"
