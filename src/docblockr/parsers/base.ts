@@ -2,6 +2,7 @@
 
 import { Config } from '../config';
 import * as util from '../utils/common';
+let XRegExp = require('xregexp');
 
 export interface IParseFunction {
     name: string,
@@ -44,8 +45,8 @@ export abstract class BaseParser {
         return (new RegExp("^" + regex.source)).exec(str);
     }
 
-    public isExistingComment(line: string): number {
-        return line.search(new RegExp('^\\s*\\*'));
+    public isExistingComment(line: string): boolean {
+        return (XRegExp.exec(line, XRegExp('^\\s*\\*'))) ? true : false;
     }
 
     public setInline(inline: boolean): void {
@@ -140,16 +141,16 @@ export abstract class BaseParser {
         // if there are arguments, add a @param for each
         if (args) {
             // remove comments inside the argument list.
-            args = args.replace(new RegExp("/\*.*?\*/"), "");
+            args = args.replace(new RegExp("/\\*.*?\\*/"), "");
             this.parseArgs(args).forEach(arg => {
-                let typeInfo: string = this.getTypeInfo(arg.argName, arg.argType);
+                let typeInfo: string = this.getTypeInfo(arg.argType, arg.argName);
 
                 let formatStr: string = "@param "
                     + typeInfo
                     + (this.config.get<boolean>('paramName') ? util.escape(arg.argName) : "")
                     + (this.config.get<boolean>("paramDescription") ? " ${1:[description]}" : "");
                 out.push(formatStr);
-            });
+            },this);
         }
         
         // return value type might be already available in some languages but
@@ -214,7 +215,7 @@ export abstract class BaseParser {
         let out: IParseArg[][] = [];
         blocks.forEach(arg => {
             out.push(this.getArgInfo(arg));
-        });
+        },this);
 
         return util.flatten<IParseArg>(out);
     }
@@ -256,7 +257,7 @@ export abstract class BaseParser {
     }
 
     protected getMatchingNotations(name: string): INotationMap[] {
-        return (this.config.get<INotationMap[]>("notationMap") || [])
+        return (this.getNotationMapFromConfig() || [])
             .filter(function(rule: INotationMap): boolean {
                 if (rule.prefix) {
                     let regex: string = util.escapeRegex(rule.prefix);
@@ -269,6 +270,17 @@ export abstract class BaseParser {
                 }
             }, this);
     }
+    
+    private getNotationMapFromConfig(): INotationMap[]{
+        // let notationMap:Object[] =  (this.config.get<Object>("notationMap"))["notations"];
+        // let out:INotationMap[] = [];
+        // notationMap.forEach(notation => {
+        //     out.push({prefix: notation.prefix, regex: notation.regex, type: notation.type, tags: notation.tags});
+        // });
+        // return out;
+        let notationMap:INotationMap[] =  (this.config.get<Object>("notationMap"))["notations"];
+        return notationMap;
+    } 
 
     public getDefinition(lines: string[]): string {
         // get a relevant definition starting at the given point
