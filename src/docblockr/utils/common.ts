@@ -8,6 +8,10 @@ export function escapeRegex(str: string) {
     return str.replace(/[.?*+^$[\]\\(){}|-]/g, "\\$&");
 }
 
+export function isNumeric(val:any):boolean {
+    return !isNaN(parseFloat(val)) && isFinite(val);
+}
+
 export function splitByCommas(str: string): string[] {
     // Split a string by unenclosed commas: that is, commas which are not inside of quotes or brackets.
     // splitByCommas('foo, bar(baz, quux), fwip = "hey, hi"')

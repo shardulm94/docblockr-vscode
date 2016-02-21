@@ -22,10 +22,10 @@ export interface IParseArg {
 }
 
 export interface INotationMap {
-    prefix: string,
-    regex: string,
-    type: string,
-    tags: string
+    prefix?: string,
+    regex?: string,
+    type?: string,
+    tags: string[]
 }
 
 export abstract class BaseParser {
@@ -191,7 +191,7 @@ export abstract class BaseParser {
 
     }
 
-    private getFunctionReturnType(name: string, retval: string): string {
+    protected getFunctionReturnType(name: string, retval: string): string {
         // returns undefined for no return type. null meaning unknown, or a string
         if ((new RegExp("[A-Z]", "i")).test(name))
             // no return, but should add a class
@@ -219,7 +219,7 @@ export abstract class BaseParser {
         return util.flatten<IParseArg>(out);
     }
 
-    private getArgInfo(arg: string): IParseArg[] {
+    protected getArgInfo(arg: string): IParseArg[] {
         // Returns an array of IParseArg, one for each argument derived from the arg param.
         return [{ argType: this.getArgType(arg), argName: this.getArgName(arg) }];
     }
@@ -242,7 +242,8 @@ export abstract class BaseParser {
         let matches: INotationMap[] = this.getMatchingNotations(name);
         if (matches.length > 0) {
             let rule: INotationMap = matches[0];
-            return (this.settings[rule.type]) ? this.settings[rule.type] : rule.type;
+            if(rule.type)
+                return (this.settings[rule.type]) ? this.settings[rule.type] : rule.type;
         }
 
         if ((new RegExp("(?:is|has)[A-Z_]", "i")).test(name))
@@ -254,7 +255,7 @@ export abstract class BaseParser {
         return null;
     }
 
-    private getMatchingNotations(name: string): INotationMap[] {
+    protected getMatchingNotations(name: string): INotationMap[] {
         return (this.config.get<INotationMap[]>("notationMap") || [])
             .filter(function(rule: INotationMap): boolean {
                 if (rule.prefix) {
