@@ -36,21 +36,18 @@ export default class DocBlockr {
         }
 
         this.initialize(editor, inline);
-        
-        if(this.parser.isExistingComment(this.line)){
+
+        if (this.parser.isExistingComment(this.line)) {
             editorEdit.insert(editor.selection.active, "\n *" + this.indentSpaces);
             return
         }
 
-        // erase characters in the view (will be added to the output later)
-        editorEdit.delete(this.trailingRgn);
-
         // match against a function declaration.
-        let out:string[] = this.parser.parse(this.line)
+        let out: string[] = this.parser.parse(this.line)
 
-        let snippet:string = this.generateSnippet(out, inline);
+        let snippet: string = this.generateSnippet(out, inline);
 
-        editorEdit.insert(editor.selection.active, snippet);
+        editorEdit.replace(this.trailingRgn, snippet)
 
     }
 
@@ -86,9 +83,12 @@ export default class DocBlockr {
         // read the next line
         this.line = this.parser.getDefinition(definitionRange);
     }
-    
-    private generateSnippet(out:string[], inline:boolean):string{
-        return out.join("\n");
+
+    private generateSnippet(out: string[], inline: boolean): string {
+        if (out)
+            return out.join("\n");
+        else
+            return "";
     }
 
     private validRunRegex(precedingText: string): boolean {
