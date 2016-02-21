@@ -111,6 +111,16 @@
             "type": "INotationMap[]",
             "default": [],
             "description": "A map to determine the value of variables, should hungarian notation (or similar) be in use."
+          },
+          "lowerCasePrimitives": {
+            "type": "boolean",
+            "default": false,
+            "description": "If set to true, primitives such as \"Number\" and \"String\" will be documented as \"number\" and \"string\"."
+          },
+          "shortPrimitives": {
+            "type": "boolean",
+            "default": false,
+            "description": "If set to true, primitives such as \"boolean\" and \"integer\" will be shortened to \"bool\" and \"int\"."
           }
         }
       }
