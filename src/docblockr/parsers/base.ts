@@ -256,7 +256,7 @@ export abstract class BaseParser {
         return (this.getNotationMapFromConfig() || [])
             .filter(function(rule: INotationMap): boolean {
                 if (rule.prefix) {
-                    let regex: string = util.escapeRegex(rule.prefix);
+                    let regex: string = XRegExp.escape(rule.prefix);
                     if (XRegExp.test(rule.prefix, XRegExp(".*[a-z]"), 0, true))
                         regex += "(?:[A-Z_]|$)";
                     return XRegExp.test(rule.prefix, XRegExp(regex), 0, true);

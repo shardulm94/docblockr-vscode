@@ -4,10 +4,6 @@ export function escape(str: string) {
     return str.replace('$', '\$').replace('{', '\{').replace('}', '\}');
 }
 
-export function escapeRegex(str: string) {
-    return str.replace(/[.?*+^$[\]\\(){}|-]/g, "\\$&");
-}
-
 export function isNumeric(val:any):boolean {
     return !isNaN(parseFloat(val)) && isFinite(val);
 }
