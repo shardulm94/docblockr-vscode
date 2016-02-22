@@ -1,0 +1,6 @@
+{
+  "name": "docblockr-vscode",
+  "ambientDependencies": {
+    "xregexp": "github:DefinitelyTyped/DefinitelyTyped/xregexp/xregexp.d.ts#bd269cad4cb2b495f940c7b6afc5825d568029be"
+  }
+}
