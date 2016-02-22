@@ -14,6 +14,7 @@ export default class DocBlockrLoader {
     
     constructor() {
         this.logger = Logger.getInstance();
+        this.logger.setPrefix('DocBlockr');
         this.config = Config.getInstance();
         this.docBlockr = new DocBlockr();
     }

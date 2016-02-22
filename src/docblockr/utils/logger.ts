@@ -20,7 +20,7 @@ export interface ILogger {
 
 export class Logger implements ILogger {
     
-    private static instance: Logger = new Logger('DocBlockr');
+    private static instance: Logger = new Logger();
     private level: LogLevel;
     private prefix: string;
 
@@ -36,31 +36,35 @@ export class Logger implements ILogger {
         return Logger.instance;
     }
     
+    public setPrefix(prefix: string): void {
+        this.prefix = prefix;
+    }
+    
     public setLogLevel(level: LogLevel): void {
         this.level = level;
     }
 
     public log(message: string): void {
         if (this.level >= LogLevel.log) {
-            console.log(`${this.prefix} ${message}`);
+            console.log(`${this.prefix} - ${message}`);
         }
     }
 
     public info(message: string): void {
         if (this.level >= LogLevel.info) {
-            console.info(`${this.prefix} ${message}`);
+            console.info(`${this.prefix} - ${message}`);
         }
     }
 
     public warn(message: string): void {
         if (this.level >= LogLevel.warn) {
-            console.warn(`${this.prefix} ${message}`);
+            console.warn(`${this.prefix} - ${message}`);
         }
     }
 
     public error(message: string): void {
         if (this.level >= LogLevel.error) {
-            console.error(`${this.prefix} ${message}`);
+            console.error(`${this.prefix} - ${message}`);
             window.showErrorMessage(message);
         }
     }

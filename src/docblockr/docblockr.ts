@@ -6,7 +6,7 @@ import { Config } from './config';
 import * as util from './utils/common';
 import * as parser from './parsers/helper';
 import { BaseParser } from './parsers/base';
-let XRegExp = require('xregexp');
+import XRegExp = require('xregexp');
 
 export default class DocBlockr {
 
@@ -49,7 +49,10 @@ export default class DocBlockr {
         let out: string[] = this.parser.parse(this.line)
 
         let snippet: string = this.generateSnippet(out, inline);
-
+        
+        // This line is used to strip the tabstops out from the snippet. The below function should be removed once
+        // functionality to insert snippets dynamically is avaliable in vscode API
+        snippet = XRegExp.replace(snippet, XRegExp('[$][{]\\d+:([^}]+)[}]'), "$1", 'all');
         editorEdit.replace(this.trailingRgn, snippet)
 
     }

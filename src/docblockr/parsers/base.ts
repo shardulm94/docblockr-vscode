@@ -2,7 +2,7 @@
 
 import { Config } from '../config';
 import * as util from '../utils/common';
-let XRegExp = require('xregexp');
+import XRegExp = require('xregexp');
 
 export interface IParseFunction {
     name: string,

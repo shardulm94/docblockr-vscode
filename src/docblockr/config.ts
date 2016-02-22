@@ -23,8 +23,8 @@ export class Config {
 
     public load(): void {
         this.config = vscode.workspace.getConfiguration('docblockr');
-        this.logger.setLogLevel(this.get<LogLevel>('logLevel'));
-        this.logger.log('Configuration laoded');
+        this.logger.setLogLevel(<LogLevel>LogLevel[this.get<string>('logLevel')]);
+        this.logger.log('Configuration loaded');
     }
 
     public get<T>(key: string): T {

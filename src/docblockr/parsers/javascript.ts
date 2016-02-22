@@ -2,7 +2,7 @@
 
 import { BaseParser, IParseFunction, IParseVar, IParseArg, INotationMap } from './base';
 import * as util from '../utils/common';
-let XRegExp = require('xregexp');
+import XRegExp = require('xregexp');
 
 export default class JavascriptParser extends BaseParser {
 
