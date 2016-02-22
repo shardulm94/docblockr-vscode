@@ -37,7 +37,7 @@ export default class JavascriptParser extends BaseParser {
     }
 
     protected parseFunction(line: string): IParseFunction {
-        let res = XRegExp.exec(line, XRegExp(
+        let res:RegExpExecArray = XRegExp.exec(line, XRegExp(
             // Normal functions...
             //   fnName = function,  fnName : function
             '(?:(?<name1>' + this.settings['varIdentifier'] + ')\\s*[:=]\\s*)?'
@@ -59,15 +59,15 @@ export default class JavascriptParser extends BaseParser {
             return null;
         
         // grab the name out of "name1 = function name2(foo)" preferring name1
-        let generatorSymbol: string = (((res.generator || '').indexOf('*') > -1) ? '*' : '');
-        let name: string = generatorSymbol + (res.name1 || res.name2 || '');
-        let args: string = res.args || res.args2 || '';
+        let generatorSymbol: string = (((res['generator'] || '').indexOf('*') > -1) ? '*' : '');
+        let name: string = generatorSymbol + (res['name1'] || res['name2'] || '');
+        let args: string = res['args'] || res['args2'] || '';
 
         return { name: name, args: args }
     }
 
     protected parseVar(line: string): IParseVar {
-        let res = XRegExp.exec(line, XRegExp(
+        let res:RegExpExecArray = XRegExp.exec(line, XRegExp(
             //    var foo = blah,
             //        foo = blah;
             //    baz.foo = blah;
@@ -79,7 +79,7 @@ export default class JavascriptParser extends BaseParser {
         if (!res)
             return null;
 
-        return { name: res.name, val: res.val.trim() };
+        return { name: res['name'], val: res['val'].trim() };
     }
     
     protected getArgInfo(arg:string) : IParseArg[]{

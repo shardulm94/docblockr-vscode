@@ -12,6 +12,7 @@ export enum LogLevel {
 
 export interface ILogger {
     setLogLevel(level: LogLevel): void;
+    setPrefix(prefix: string): void;
     error(message: string): void;
     warn(message: string): void;
     log(message: string): void;

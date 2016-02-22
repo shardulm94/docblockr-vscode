@@ -239,7 +239,7 @@ export default class DocBlockr {
             if (this.config.get<string>('spacerBetweenSections') == "true") {
                 let lastTag: string;
                 for (let index: number = 0; index < out.length; index++) {
-                    let res = XRegExp.match(out[index], XRegExp('^\\s*@([a-zA-Z]+)'));
+                    let res:string[] = XRegExp.match(out[index], XRegExp('^\\s*@([a-zA-Z]+)'));
                     if (res && (lastTag != res[1])) {
                         if (this.config.get<boolean>('functionDescription') || (!this.config.get<boolean>('functionDescription') && lastTag))
                             out.splice(index++, 0, "");
@@ -249,7 +249,7 @@ export default class DocBlockr {
             } else if (this.config.get<string>('spacerBetweenSections') == 'after_description' && this.config.get<boolean>('functionDescription')) {
                 let lastLineIsTag: boolean = false;
                 for (let index: number = 0; index < out.length; index++) {
-                    let res = XRegExp.match(out[index], XRegExp('^\\s*@([a-zA-Z]+)'));
+                    let res:string[] = XRegExp.match(out[index], XRegExp('^\\s*@([a-zA-Z]+)'));
                     if (res) {
                         if (!lastLineIsTag)
                             out.splice(index++, 0, "");

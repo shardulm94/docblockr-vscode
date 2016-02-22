@@ -306,7 +306,7 @@ export abstract class BaseParser {
             // needed for cases like this:
             // (function (foo, bar) { ... })
             if (definition == "") {
-                let opener = ((this.settings['fnOpener']) ? XRegExp.exec(line, XRegExp(this.settings['fnOpener'])) : null);
+                let opener:RegExpExecArray = ((this.settings['fnOpener']) ? XRegExp.exec(line, XRegExp(this.settings['fnOpener'])) : null);
                 if (opener)
                     // ignore everything before the function opener
                     searchForBrackets = line.substring(opener.index);
