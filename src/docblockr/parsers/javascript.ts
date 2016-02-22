@@ -157,7 +157,7 @@ export default class JavascriptParser extends BaseParser {
             let returnVal:string = ((shortPrimitives)?'Bool': 'Boolean');
             return ((lowerPrimitives)? returnVal.toLowerCase() : returnVal);
         }
-        if (XRegExp.test(val, XRegExp('RegExp\\b|\\/[^\\/]'), 0, true)) // TODO : check if this works
+        if (XRegExp.test(val, XRegExp('RegExp\\b|\\/[^\\/]'), 0, true))
             return 'RegExp';
         if (val.indexOf('=>') > -1)
             return ((lowerPrimitives)?'function' : 'Function');

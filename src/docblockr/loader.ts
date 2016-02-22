@@ -23,6 +23,7 @@ export default class DocBlockrLoader {
         subscriptions.push(this);
         vscode.workspace.onDidChangeConfiguration(this.config.load, this, subscriptions);
         vscode.commands.registerTextEditorCommand('docblockr.runTab', this.docBlockr.runTab, this.docBlockr);
+        vscode.commands.registerTextEditorCommand('docblockr.runEnter', this.docBlockr.runEnter, this.docBlockr);
         this.logger.log("DocBlockr activated.");
     }
 

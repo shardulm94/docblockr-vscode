@@ -53,12 +53,17 @@ export default class DocBlockr {
         // This line is used to strip the tabstops out from the snippet. The below function should be removed once
         // functionality to insert snippets dynamically is avaliable in vscode API
         snippet = XRegExp.replace(snippet, XRegExp('[$][{]\\d+:([^}]+)[}]'), "$1", 'all');
-        editorEdit.replace(this.trailingRgn, snippet)
+        editorEdit.replace(this.trailingRgn, snippet);
 
     }
 
     public runTab(editor: vscode.TextEditor, editorEdit: vscode.TextEditorEdit): void {
         this.keyPressed = "\t";
+        this.run(editor, editorEdit);
+    }
+    
+    public runEnter(editor: vscode.TextEditor, editorEdit: vscode.TextEditorEdit): void {
+        this.keyPressed = "\n";
         this.run(editor, editorEdit);
     }
 
@@ -239,7 +244,7 @@ export default class DocBlockr {
             if (this.config.get<string>('spacerBetweenSections') == "true") {
                 let lastTag: string;
                 for (let index: number = 0; index < out.length; index++) {
-                    let res:string[] = XRegExp.match(out[index], XRegExp('^\\s*@([a-zA-Z]+)'));
+                    let res: string[] = XRegExp.match(out[index], XRegExp('^\\s*@([a-zA-Z]+)'));
                     if (res && (lastTag != res[1])) {
                         if (this.config.get<boolean>('functionDescription') || (!this.config.get<boolean>('functionDescription') && lastTag))
                             out.splice(index++, 0, "");
@@ -249,7 +254,7 @@ export default class DocBlockr {
             } else if (this.config.get<string>('spacerBetweenSections') == 'after_description' && this.config.get<boolean>('functionDescription')) {
                 let lastLineIsTag: boolean = false;
                 for (let index: number = 0; index < out.length; index++) {
-                    let res:string[] = XRegExp.match(out[index], XRegExp('^\\s*@([a-zA-Z]+)'));
+                    let res: string[] = XRegExp.match(out[index], XRegExp('^\\s*@([a-zA-Z]+)'));
                     if (res) {
                         if (!lastLineIsTag)
                             out.splice(index++, 0, "");

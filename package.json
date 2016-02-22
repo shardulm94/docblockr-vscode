@@ -29,6 +29,11 @@
                 "command": "docblockr.runTab",
                 "key": "tab",
                 "when": "editorTextFocus && !editorHasSelection && !editorHasMultipleSelections && !suggestWidgetVisible"
+            },
+            {
+                "command": "docblockr.runEnter",
+                "key": "enter",
+                "when": "editorTextFocus && !editorHasSelection && !editorHasMultipleSelections && !suggestWidgetVisible"
             }
         ],
         "configuration": {
@@ -94,6 +99,11 @@
                 },
                 "docblockr.alignTags": {
                     "type": "string",
+                    "enum": [
+                        "no",
+                        "shallow",
+                        "deep"
+                    ],
                     "default": "deep",
                     "description": "Whether the words following the @tags should align.\nPossible values are 'no', 'shallow', 'deep'\n\n'shallow' will just align the first words after the tag. eg:\n@param    {MyCustomClass} myVariable desc1\n@return   {String} foo desc2\n@property {Number} blahblah desc3\n\n'deep' will align each component of the tags, eg:\n@param    {MyCustomClass} myVariable desc1\n@return   {String}        foo        desc2\n@property {Number}        blahblah   desc3"
                 },
@@ -131,6 +141,11 @@
                 },
                 "docblockr.spacerBetweenSections": {
                     "type": "string",
+                    "enum": [
+                        "true",
+                        "false",
+                        "after_description"
+                    ],
                     "default": "false",
                     "description": "Whether there should be blank lines added between the description line, and between tags of different types.\nPossible values are \"true\", \"false\", or \"after_description\".\nIf \"true\", the output might look like this:\n\n/**\n * [description]\n *\n * @param  {String} foo\n * @param  {Number} bar\n *\n * @return {[Type]}\n */\n\nIf \"after_description\" is configured, a blank line is only added between the description and the first tag, but not\nbetween different tag sections, so the output, in that case, might look like this:\n\n/**\n * [description]\n *\n * @param  {String} foo\n * @param  {Number} bar\n * @return {[Type]}\n */\n"
                 },
