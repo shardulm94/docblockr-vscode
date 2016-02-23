@@ -176,12 +176,12 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/shardulm94/docblockr-vscode.git"
+        "url": "git+https://github.com/shardulm94/vscode-docblockr.git"
     },
     "author": "Shardul Mahadik",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/shardulm94/docblockr-vscode/issues"
+        "url": "https://github.com/shardulm94/vscode-docblockr/issues"
     },
-    "homepage": "https://github.com/shardulm94/docblockr-vscode#readme"
+    "homepage": "https://github.com/shardulm94/vscode-docblockr#readme"
 }
