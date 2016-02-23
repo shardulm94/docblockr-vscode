@@ -12,7 +12,7 @@ export default class DocBlockr {
 
     private logger: ILogger;
     private config: Config;
-    private keyPressed: string;
+    public keyPressed: string;
 
     private trailingRgn: vscode.Range;
     private trailingString: string;
@@ -28,19 +28,16 @@ export default class DocBlockr {
         this.config = Config.getInstance();
     }
 
-    public run(editor: vscode.TextEditor, editorEdit: vscode.TextEditorEdit, inline: boolean = false): void {
-        let currLine: number = editor.selection.active.line,
-            currChar: number = editor.selection.active.character,
-            precedingText: string = editor.document.getText(new vscode.Range(currLine, 0, currLine, currChar));
+    public run(editor: vscode.TextEditor, editorEdit: vscode.TextEditorEdit, args: {} = {}): void {
 
-        if (!this.validRunRegex(precedingText)) {
-            editorEdit.insert(editor.selection.active, this.keyPressed);
-            return;
-        }
+        let inline: boolean = args["inline"] || false;
 
         this.initialize(editor, inline);
 
         if (this.parser.isExistingComment(this.line)) {
+            // This line is used to strip the tabstops out from the snippet. The below function should be removed once
+            // functionality to insert snippets dynamically is avaliable in vscode API
+            this.indentSpaces = XRegExp.replace(this.indentSpaces, XRegExp('[$][{]\\d+:([^}]+)[}]'), "$1", 'all');
             editorEdit.insert(editor.selection.active, "\n *" + this.indentSpaces);
             return
         }
@@ -55,16 +52,6 @@ export default class DocBlockr {
         snippet = XRegExp.replace(snippet, XRegExp('[$][{]\\d+:([^}]+)[}]'), "$1", 'all');
         editorEdit.replace(this.trailingRgn, snippet);
 
-    }
-
-    public runTab(editor: vscode.TextEditor, editorEdit: vscode.TextEditorEdit): void {
-        this.keyPressed = "\t";
-        this.run(editor, editorEdit);
-    }
-    
-    public runEnter(editor: vscode.TextEditor, editorEdit: vscode.TextEditorEdit): void {
-        this.keyPressed = "\n";
-        this.run(editor, editorEdit);
     }
 
     private initialize(editor: vscode.TextEditor, inline: boolean = false): void {
@@ -270,21 +257,6 @@ export default class DocBlockr {
         }
         snippet += "\n" + closer;
         return snippet;
-    }
-
-
-    private validRunRegex(precedingText: string): boolean {
-        let validPrecedingRegexes: string[] = [
-            "^\\s*(\\/\\*|###)[*!]\\s*$"
-        ];
-        return this.validRegex(precedingText, validPrecedingRegexes);
-    }
-
-    private validRegex(str: string, regexes: string[]): boolean {
-        for (var i = 0; i < regexes.length; i++) {
-            if (XRegExp.test(str, XRegExp(regexes[i]))) return true;
-        }
-        return false;
     }
 
 }
