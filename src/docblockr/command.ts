@@ -4,7 +4,8 @@ import XRegExp = require('xregexp');
 
 enum CommandKey {
     selectionEmpty,
-    precedingText
+    precedingText,
+    followingText
 }
 
 enum CommandOperator {
@@ -62,13 +63,20 @@ export default class CommandManager {
     }
 
     private checkRule(editor: vscode.TextEditor, rule: ICommandRule): boolean {
-        let currLine: number = editor.selection.active.line,
-            currChar: number = editor.selection.active.character,
-            precedingText: string = editor.document.getText(new vscode.Range(currLine, 0, currLine, currChar));
+        let active: vscode.Position = editor.selection.active,
+            currLine: vscode.TextLine = editor.document.lineAt(active),
+            precedingText: string = editor.document.getText(new vscode.Range(currLine.range.start, active)),
+            followingText: string = editor.document.getText(new vscode.Range(active, currLine.range.end));
+            
         switch (rule.key) {
             case CommandKey.precedingText:
                 if (rule.operator == CommandOperator.regexContains) {
                     return XRegExp.test(precedingText, XRegExp(rule.operand));
+                }
+                break;
+            case CommandKey.followingText:
+                if (rule.operator == CommandOperator.regexContains) {
+                    return XRegExp.test(followingText, XRegExp(rule.operand));
                 }
                 break;
 
@@ -100,6 +108,14 @@ export default class CommandManager {
                         operator: CommandOperator.regexContains,
                         operand: "^\\s*(\\/\\*|###)[*!]\\s*$"
                     }]
+                },{
+                    command: this.docblockr.insertSnippet,
+                    args: {contents: "\n$0\n */"},
+                    rules: [{
+                        key: CommandKey.precedingText,
+                        operator: CommandOperator.regexContains,
+                        operand: "^\\s*\\/\\*$"
+                    }],
                 }]
             },
             {
@@ -111,6 +127,18 @@ export default class CommandManager {
                         operator: CommandOperator.regexContains,
                         operand: "^\\s*(\\/\\*|###)[*!]\\s*$"
                     }]
+                },{
+                    command: this.docblockr.insertSnippet,
+                    args: {contents: "\n$0\n "},
+                    rules: [{
+                        key: CommandKey.precedingText,
+                        operator: CommandOperator.regexContains,
+                        operand: "^\\s*\\/\\*$"
+                    },{
+                        key: CommandKey.followingText,
+                        operator: CommandOperator.regexContains,
+                        operand: "^\\*\\/\\s*$"
+                    }],
                 }]
             }
         ];

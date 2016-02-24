@@ -61,6 +61,18 @@ export default class DocBlockr {
         });
 
     }
+    
+    public insertSnippet(editor: vscode.TextEditor, editorEdit: vscode.TextEditorEdit, args: {} = {}): void {
+        
+        let contents: string = args["contents"] || "";
+        
+        // This line is used to strip the tabstops out from the snippet. The below function should be removed once
+        // functionality to insert snippets dynamically is avaliable in vscode API
+        contents = XRegExp.replace(contents, XRegExp('[$][{]\\d+:([^}]+)[}]'), "$1", 'all');
+        contents = XRegExp.replace(contents, XRegExp('[$]\\d+'), "", 'all');
+        
+        editorEdit.insert(editor.selection.active,contents);
+    }
 
     private initialize(editor: vscode.TextEditor, inline: boolean = false): void {
         let point: vscode.Position = editor.selection.end;
