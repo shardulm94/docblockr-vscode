@@ -129,6 +129,14 @@ export default class CommandManager {
                     }]
                 },{
                     command: this.docblockr.insertSnippet,
+                    args: {contents: "\n$0\n */"},
+                    rules: [{
+                        key: CommandKey.precedingText,
+                        operator: CommandOperator.regexContains,
+                        operand: "^\\s*\\/\\*$"
+                    }],
+                },{
+                    command: this.docblockr.insertSnippet,
                     args: {contents: "\n$0\n "},
                     rules: [{
                         key: CommandKey.precedingText,
